@@ -63,16 +63,14 @@ def plot_feature_importance(model: RandomForestClassifier, top_n: int = 20):
 
 
 def main():
-    root = r"..\GAMEEMO"  # 请确保数据集路径正确
+    root = r"..\GAMEEMO"
 
-    # 1. 数据加载与准备
     print("--- Building Dataset ---")
     X, y = build_dataset(root, fs=128, epoch_sec=4)
     X_tr, X_te, y_tr, y_te = train_test_split(
         X, y, test_size=0.2, stratify=y, random_state=42
     )
 
-    # 特征缩放
     scaler = StandardScaler().fit(X_tr)
     X_tr_scaled = scaler.transform(X_tr)
     X_te_scaled = scaler.transform(X_te)
@@ -93,22 +91,21 @@ def main():
     rf.fit(X_tr_scaled, y_tr)
     print("Model training complete.\n")
 
-    y_pred_tr_rf = rf.predict(X_tr_scaled)
-    training_accuracy_rf = accuracy_score(y_tr, y_pred_tr_rf)
-    training_error_rf = 1.0 - training_accuracy_rf
-    print(f"Random Forest Training Accuracy: {training_accuracy_rf:.4f}")
-    print(f"Random Forest Training Error: {training_error_rf:.4f}\n")
-
     print("--- Evaluating Model Performance ---")
-    y_pred_rf = rf.predict(X_te_scaled)
+    y_pred_tr = rf.predict(X_tr_scaled)
+    training_accuracy = accuracy_score(y_tr, y_pred_tr)
+    training_error = 1.0 - training_accuracy
+    print(f"Random Forest Training Accuracy: {training_accuracy:.4f}")
+    print(f"Random Forest Training Error: {training_error:.4f}\n")
+
+    y_pred_te = rf.predict(X_te_scaled)
 
     print("Random Forest Results:")
-    print(classification_report(y_te, y_pred_rf, digits=4))
+    print(classification_report(y_te, y_pred_te, digits=4))
 
-    print("errors:")
-    print(1-accuracy_score(y_te, y_pred_rf))
+    print(f"Random Forest test errors: {1-accuracy_score(y_te, y_pred_te):.4f}")
 
-    plot_confusion(y_te, y_pred_rf, title="Confusion Matrix (Random Forest)")
+    plot_confusion(y_te, y_pred_te, title="Confusion Matrix (Random Forest)")
 
     plot_feature_importance(rf)
 
