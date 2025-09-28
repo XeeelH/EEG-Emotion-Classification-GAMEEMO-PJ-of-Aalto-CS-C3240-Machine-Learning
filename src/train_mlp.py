@@ -67,11 +67,18 @@ def main():
     )
     mlp.fit(X_tr, y_tr)
 
+    y_pred_tr = mlp.predict(X_tr)
+    training_accuracy_rf = accuracy_score(y_tr, y_pred_tr)
+    training_error_rf = 1.0 - training_accuracy_rf
+    print(f"MLP Training Accuracy: {training_accuracy_rf:.4f}")
+    print(f"MLP Training Error: {training_error_rf:.4f}\n")
+
     y_pred = mlp.predict(X_te)
     acc = accuracy_score(y_te, y_pred)
     f1m = f1_score(y_te, y_pred, average="macro")
 
     print(f"MLP Accuracy: {acc:.4f}")
+    print(f"MLP test errors: {1-acc:.4f}")
     print(f"MLP Macro-F1: {f1m:.4f}")
     print(classification_report(y_te, y_pred, digits=3))
 
