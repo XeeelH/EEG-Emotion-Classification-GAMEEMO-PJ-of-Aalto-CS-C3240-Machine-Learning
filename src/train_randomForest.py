@@ -76,7 +76,6 @@ def main():
     X_te_scaled = scaler.transform(X_te)
     print("Dataset prepared, split, and scaled.\n")
 
-    # 2. 训练和评估 Random Forest 分类器
     print("--- Training Random Forest Classifier ---")
     rf = RandomForestClassifier(
         criterion='gini',
